@@ -1,4 +1,4 @@
-// Copyright (c) 2009-2020 The Bitcoin Core developers
+// Copyright (c) 2009-2019 The CounosH Core developers
 // Copyright (c) 2017 The Zcash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -7,7 +7,6 @@
 
 #include <secp256k1.h>
 #include <secp256k1_recovery.h>
-#include <secp256k1_schnorrsig.h>
 
 namespace
 {
@@ -21,11 +20,11 @@ secp256k1_context* secp256k1_context_verify = nullptr;
  *
  *  Supported violations include negative integers, excessive padding, garbage
  *  at the end, and overly long length descriptors. This is safe to use in
- *  Bitcoin because since the activation of BIP66, signatures are verified to be
+ *  CounosH because since the activation of BIP66, signatures are verified to be
  *  strict DER before being passed to this module, and we know it supports all
  *  violations present in the blockchain before that point.
  */
-int ecdsa_signature_parse_der_lax(const secp256k1_context* ctx, secp256k1_ecdsa_signature* sig, const unsigned char *input, size_t inputlen) {
+static int ecdsa_signature_parse_der_lax(const secp256k1_context* ctx, secp256k1_ecdsa_signature* sig, const unsigned char *input, size_t inputlen) {
     size_t rpos, rlen, spos, slen;
     size_t pos = 0;
     size_t lenbyte;
@@ -167,27 +166,6 @@ int ecdsa_signature_parse_der_lax(const secp256k1_context* ctx, secp256k1_ecdsa_
     return 1;
 }
 
-XOnlyPubKey::XOnlyPubKey(Span<const unsigned char> bytes)
-{
-    assert(bytes.size() == 32);
-    std::copy(bytes.begin(), bytes.end(), m_keydata.begin());
-}
-
-bool XOnlyPubKey::VerifySchnorr(const uint256& msg, Span<const unsigned char> sigbytes) const
-{
-    assert(sigbytes.size() == 64);
-    secp256k1_xonly_pubkey pubkey;
-    if (!secp256k1_xonly_pubkey_parse(secp256k1_context_verify, &pubkey, m_keydata.data())) return false;
-    return secp256k1_schnorrsig_verify(secp256k1_context_verify, sigbytes.data(), msg.begin(), &pubkey);
-}
-
-bool XOnlyPubKey::CheckPayToContract(const XOnlyPubKey& base, const uint256& hash, bool parity) const
-{
-    secp256k1_xonly_pubkey base_point;
-    if (!secp256k1_xonly_pubkey_parse(secp256k1_context_verify, &base_point, base.data())) return false;
-    return secp256k1_xonly_pubkey_tweak_add_check(secp256k1_context_verify, m_keydata.begin(), parity, &base_point, hash.begin());
-}
-
 bool CPubKey::Verify(const uint256 &hash, const std::vector<unsigned char>& vchSig) const {
     if (!IsValid())
         return false;
@@ -201,7 +179,7 @@ bool CPubKey::Verify(const uint256 &hash, const std::vector<unsigned char>& vchS
         return false;
     }
     /* libsecp256k1's ECDSA verification requires lower-S signatures, which have
-     * not historically been enforced in Bitcoin, so normalize them first. */
+     * not historically been enforced in CounosH, so normalize them first. */
     secp256k1_ecdsa_signature_normalize(secp256k1_context_verify, &sig, &sig);
     return secp256k1_ecdsa_verify(secp256k1_context_verify, &sig, hash.begin(), &pubkey);
 }

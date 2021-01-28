@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2019 The Bitcoin Core developers
+// Copyright (c) 2011-2019 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,12 +11,10 @@
 #include <QUrl>
 
 OpenURIDialog::OpenURIDialog(QWidget *parent) :
-    QDialog(parent, GUIUtil::dialog_flags),
+    QDialog(parent),
     ui(new Ui::OpenURIDialog)
 {
     ui->setupUi(this);
-
-    GUIUtil::handleCloseWindowShortcut(this);
 }
 
 OpenURIDialog::~OpenURIDialog()
@@ -32,7 +30,7 @@ QString OpenURIDialog::getURI()
 void OpenURIDialog::accept()
 {
     SendCoinsRecipient rcp;
-    if(GUIUtil::parseBitcoinURI(getURI(), &rcp))
+    if(GUIUtil::parseCounosHURI(getURI(), &rcp))
     {
         /* Only accept value URIs */
         QDialog::accept();

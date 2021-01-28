@@ -1,10 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2020 The Bitcoin Core developers
+// Copyright (c) 2009-2019 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_STREAMS_H
-#define BITCOIN_STREAMS_H
+#ifndef COUNOSH_STREAMS_H
+#define COUNOSH_STREAMS_H
 
 #include <support/allocators/zeroafterfree.h>
 #include <serialize.h>
@@ -60,7 +60,6 @@ public:
     int GetVersion() const { return nVersion; }
     int GetType() const { return nType; }
     size_t size() const { return stream->size(); }
-    void ignore(size_t size) { return stream->ignore(size); }
 };
 
 /* Minimal stream for overwriting and/or appending to an existing byte vector
@@ -815,6 +814,18 @@ public:
         return true;
     }
 
+    bool Seek(uint64_t nPos) {
+        long nLongPos = nPos;
+        if (nPos != (uint64_t)nLongPos)
+            return false;
+        if (fseek(src, nLongPos, SEEK_SET))
+            return false;
+        nLongPos = ftell(src);
+        nSrcPos = nLongPos;
+        nReadPos = nLongPos;
+        return true;
+    }
+
     //! prevent reading beyond a certain position
     //! no argument removes the limit
     bool SetLimit(uint64_t nPos = std::numeric_limits<uint64_t>::max()) {
@@ -843,4 +854,4 @@ public:
     }
 };
 
-#endif // BITCOIN_STREAMS_H
+#endif // COUNOSH_STREAMS_H

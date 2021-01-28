@@ -1,19 +1,19 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2020 The Bitcoin Core developers
+// Copyright (c) 2009-2019 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_ADDRDB_H
-#define BITCOIN_ADDRDB_H
+#ifndef COUNOSH_ADDRDB_H
+#define COUNOSH_ADDRDB_H
 
 #include <fs.h>
 #include <net_types.h> // For banmap_t
 #include <serialize.h>
 
 #include <string>
-#include <vector>
+#include <map>
 
-class CAddress;
+class CSubNet;
 class CAddrMan;
 class CDataStream;
 
@@ -73,20 +73,4 @@ public:
     bool Read(banmap_t& banSet);
 };
 
-/**
- * Dump the anchor IP address database (anchors.dat)
- *
- * Anchors are last known outgoing block-relay-only peers that are
- * tried to re-connect to on startup.
- */
-void DumpAnchors(const fs::path& anchors_db_path, const std::vector<CAddress>& anchors);
-
-/**
- * Read the anchor IP address database (anchors.dat)
- *
- * Deleting anchors.dat is intentional as it avoids renewed peering to anchors after
- * an unclean shutdown and thus potential exploitation of the anchor peer policy.
- */
-std::vector<CAddress> ReadAnchors(const fs::path& anchors_db_path);
-
-#endif // BITCOIN_ADDRDB_H
+#endif // COUNOSH_ADDRDB_H

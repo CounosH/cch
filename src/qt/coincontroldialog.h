@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2020 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_COINCONTROLDIALOG_H
-#define BITCOIN_QT_COINCONTROLDIALOG_H
+#ifndef COUNOSH_QT_COINCONTROLDIALOG_H
+#define COUNOSH_QT_COINCONTROLDIALOG_H
 
 #include <amount.h>
 
@@ -33,7 +33,7 @@ public:
     explicit CCoinControlWidgetItem(QTreeWidget *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
     explicit CCoinControlWidgetItem(QTreeWidgetItem *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
 
-    bool operator<(const QTreeWidgetItem &other) const override;
+    bool operator<(const QTreeWidgetItem &other) const;
 };
 
 
@@ -111,4 +111,4 @@ private Q_SLOTS:
     void updateLabelLocked();
 };
 
-#endif // BITCOIN_QT_COINCONTROLDIALOG_H
+#endif // COUNOSH_QT_COINCONTROLDIALOG_H

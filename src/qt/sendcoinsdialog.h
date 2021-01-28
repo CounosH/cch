@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2020 The Bitcoin Core developers
+// Copyright (c) 2011-2019 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_SENDCOINSDIALOG_H
-#define BITCOIN_QT_SENDCOINSDIALOG_H
+#ifndef COUNOSH_QT_SENDCOINSDIALOG_H
+#define COUNOSH_QT_SENDCOINSDIALOG_H
 
 #include <qt/walletmodel.h>
 
@@ -17,7 +17,6 @@ class ClientModel;
 class PlatformStyle;
 class SendCoinsEntry;
 class SendCoinsRecipient;
-enum class SynchronizationState;
 
 namespace Ui {
     class SendCoinsDialog;
@@ -27,7 +26,7 @@ QT_BEGIN_NAMESPACE
 class QUrl;
 QT_END_NAMESPACE
 
-/** Dialog for sending bitcoins */
+/** Dialog for sending counoshs */
 class SendCoinsDialog : public QDialog
 {
     Q_OBJECT
@@ -49,8 +48,8 @@ public:
 
 public Q_SLOTS:
     void clear();
-    void reject() override;
-    void accept() override;
+    void reject();
+    void accept();
     SendCoinsEntry *addEntry();
     void updateTabsAndLabels();
     void setBalance(const interfaces::WalletBalances& balances);
@@ -63,7 +62,6 @@ private:
     ClientModel *clientModel;
     WalletModel *model;
     std::unique_ptr<CCoinControl> m_coin_control;
-    std::unique_ptr<WalletModelTransaction> m_current_transaction;
     bool fNewRecipientAllowed;
     bool fFeeMinimized;
     const PlatformStyle *platformStyle;
@@ -73,8 +71,6 @@ private:
     // Additional parameter msgArg can be used via .arg(msgArg).
     void processSendCoinsReturn(const WalletModel::SendCoinsReturn &sendCoinsReturn, const QString &msgArg = QString());
     void minimizeFeeSection(bool fMinimize);
-    // Format confirmation message
-    bool PrepareSendText(QString& question_string, QString& informative_text, QString& detailed_text);
     void updateFeeMinimizedLabel();
     // Update the passed in CCoinControl with state from the GUI
     void updateCoinControlState(CCoinControl& ctrl);
@@ -99,7 +95,6 @@ private Q_SLOTS:
     void coinControlClipboardLowOutput();
     void coinControlClipboardChange();
     void updateFeeSectionControls();
-    void updateNumberOfBlocks(int count, const QDateTime& blockDate, double nVerificationProgress, bool headers, SynchronizationState sync_state);
     void updateSmartFeeLabel();
 
 Q_SIGNALS:
@@ -115,8 +110,8 @@ class SendConfirmationDialog : public QMessageBox
     Q_OBJECT
 
 public:
-    SendConfirmationDialog(const QString& title, const QString& text, const QString& informative_text = "", const QString& detailed_text = "", int secDelay = SEND_CONFIRM_DELAY, const QString& confirmText = "", QWidget* parent = nullptr);
-    int exec() override;
+    SendConfirmationDialog(const QString& title, const QString& text, const QString& informative_text = "", const QString& detailed_text = "", int secDelay = SEND_CONFIRM_DELAY, const QString& confirmText = "Send", QWidget* parent = nullptr);
+    int exec();
 
 private Q_SLOTS:
     void countDown();
@@ -129,4 +124,4 @@ private:
     QString confirmButtonText;
 };
 
-#endif // BITCOIN_QT_SENDCOINSDIALOG_H
+#endif // COUNOSH_QT_SENDCOINSDIALOG_H

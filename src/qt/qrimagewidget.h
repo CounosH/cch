@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2020 The Bitcoin Core developers
+// Copyright (c) 2011-2019 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_QRIMAGEWIDGET_H
-#define BITCOIN_QT_QRIMAGEWIDGET_H
+#ifndef COUNOSH_QT_QRIMAGEWIDGET_H
+#define COUNOSH_QT_QRIMAGEWIDGET_H
 
 #include <QImage>
 #include <QLabel>
@@ -12,9 +12,7 @@
 static const int MAX_URI_LENGTH = 255;
 
 /* Size of exported QR Code image */
-static constexpr int QR_IMAGE_SIZE = 300;
-static constexpr int QR_IMAGE_TEXT_MARGIN = 10;
-static constexpr int QR_IMAGE_MARGIN = 2 * QR_IMAGE_TEXT_MARGIN;
+static const int QR_IMAGE_SIZE = 300;
 
 QT_BEGIN_NAMESPACE
 class QMenu;
@@ -37,11 +35,11 @@ public Q_SLOTS:
     void copyImage();
 
 protected:
-    virtual void mousePressEvent(QMouseEvent *event) override;
-    virtual void contextMenuEvent(QContextMenuEvent *event) override;
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void contextMenuEvent(QContextMenuEvent *event);
 
 private:
     QMenu *contextMenu;
 };
 
-#endif // BITCOIN_QT_QRIMAGEWIDGET_H
+#endif // COUNOSH_QT_QRIMAGEWIDGET_H

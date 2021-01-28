@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2020 The Bitcoin Core developers
+// Copyright (c) 2011-2019 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -75,15 +75,12 @@ public:
     explicit AddressTablePriv(AddressTableModel *_parent):
         parent(_parent) {}
 
-    void refreshAddressTable(interfaces::Wallet& wallet, bool pk_hash_only = false)
+    void refreshAddressTable(interfaces::Wallet& wallet)
     {
         cachedAddressTable.clear();
         {
             for (const auto& address : wallet.getAddresses())
             {
-                if (pk_hash_only && !std::holds_alternative<PKHash>(address.dest)) {
-                    continue;
-                }
                 AddressTableEntry::Type addressType = translateTransactionType(
                         QString::fromStdString(address.purpose), address.is_mine);
                 cachedAddressTable.append(AddressTableEntry(addressType,
@@ -162,12 +159,12 @@ public:
     }
 };
 
-AddressTableModel::AddressTableModel(WalletModel *parent, bool pk_hash_only) :
+AddressTableModel::AddressTableModel(WalletModel *parent) :
     QAbstractTableModel(parent), walletModel(parent)
 {
     columns << tr("Label") << tr("Address");
     priv = new AddressTablePriv(this);
-    priv->refreshAddressTable(parent->wallet(), pk_hash_only);
+    priv->refreshAddressTable(parent->wallet());
 }
 
 AddressTableModel::~AddressTableModel()
@@ -177,17 +174,13 @@ AddressTableModel::~AddressTableModel()
 
 int AddressTableModel::rowCount(const QModelIndex &parent) const
 {
-    if (parent.isValid()) {
-        return 0;
-    }
+    Q_UNUSED(parent);
     return priv->size();
 }
 
 int AddressTableModel::columnCount(const QModelIndex &parent) const
 {
-    if (parent.isValid()) {
-        return 0;
-    }
+    Q_UNUSED(parent);
     return columns.length();
 }
 
@@ -261,7 +254,7 @@ bool AddressTableModel::setData(const QModelIndex &index, const QVariant &value,
         } else if(index.column() == Address) {
             CTxDestination newAddress = DecodeDestination(value.toString().toStdString());
             // Refuse to set invalid address, set error status and return false
-            if(std::get_if<CNoDestination>(&newAddress))
+            if(boost::get<CNoDestination>(&newAddress))
             {
                 editStatus = INVALID_ADDRESS;
                 return false;
@@ -340,7 +333,7 @@ QModelIndex AddressTableModel::index(int row, int column, const QModelIndex &par
 void AddressTableModel::updateEntry(const QString &address,
         const QString &label, bool isMine, const QString &purpose, int status)
 {
-    // Update address book model from Bitcoin core
+    // Update address book model from CounosH core
     priv->updateEntry(address, label, isMine, purpose, status);
 }
 

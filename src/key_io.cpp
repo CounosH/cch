@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2019 The Bitcoin Core developers
+// Copyright (c) 2014-2019 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,15 +8,16 @@
 #include <bech32.h>
 #include <util/strencodings.h>
 
-#include <algorithm>
+#include <boost/variant/apply_visitor.hpp>
+#include <boost/variant/static_visitor.hpp>
+
 #include <assert.h>
 #include <string.h>
+#include <algorithm>
 
-/// Maximum witness length for Bech32 addresses.
-static constexpr std::size_t BECH32_WITNESS_PROG_MAX_LEN = 40;
-
-namespace {
-class DestinationEncoder
+namespace
+{
+class DestinationEncoder : public boost::static_visitor<std::string>
 {
 private:
     const CChainParams& m_params;
@@ -68,13 +69,12 @@ public:
     std::string operator()(const CNoDestination& no) const { return {}; }
 };
 
-CTxDestination DecodeDestination(const std::string& str, const CChainParams& params, std::string& error_str)
+CTxDestination DecodeDestination(const std::string& str, const CChainParams& params)
 {
     std::vector<unsigned char> data;
     uint160 hash;
-    error_str = "";
     if (DecodeBase58Check(str, data, 21)) {
-        // base58-encoded Bitcoin addresses.
+        // base58-encoded CounosH addresses.
         // Public-key-hash-addresses have version 0 (or 111 testnet).
         // The data vector contains RIPEMD160(SHA256(pubkey)), where pubkey is the serialized public key.
         const std::vector<unsigned char>& pubkey_prefix = params.Base58Prefix(CChainParams::PUBKEY_ADDRESS);
@@ -89,21 +89,10 @@ CTxDestination DecodeDestination(const std::string& str, const CChainParams& par
             std::copy(data.begin() + script_prefix.size(), data.end(), hash.begin());
             return ScriptHash(hash);
         }
-
-        // Set potential error message.
-        // This message may be changed if the address can also be interpreted as a Bech32 address.
-        error_str = "Invalid prefix for Base58-encoded address";
     }
     data.clear();
     auto bech = bech32::Decode(str);
-    if (bech.second.size() > 0) {
-        error_str = "";
-
-        if (bech.first != params.Bech32HRP()) {
-            error_str = "Invalid prefix for Bech32 address";
-            return CNoDestination();
-        }
-
+    if (bech.second.size() > 0 && bech.first == params.Bech32HRP()) {
         // Bech32 decoding
         int version = bech.second[0]; // The first 5 bit symbol is the witness version (0-16)
         // The rest of the symbols are converted witness program bytes.
@@ -124,21 +113,11 @@ CTxDestination DecodeDestination(const std::string& str, const CChainParams& par
                         return scriptid;
                     }
                 }
-
-                error_str = "Invalid Bech32 v0 address data size";
                 return CNoDestination();
             }
-
-            if (version > 16) {
-                error_str = "Invalid Bech32 address witness version";
+            if (version > 16 || data.size() < 2 || data.size() > 40) {
                 return CNoDestination();
             }
-
-            if (data.size() < 2 || data.size() > BECH32_WITNESS_PROG_MAX_LEN) {
-                error_str = "Invalid Bech32 address data size";
-                return CNoDestination();
-            }
-
             WitnessUnknown unk;
             unk.version = version;
             std::copy(data.begin(), data.end(), unk.program);
@@ -146,10 +125,6 @@ CTxDestination DecodeDestination(const std::string& str, const CChainParams& par
             return unk;
         }
     }
-
-    // Set error message if address can't be interpreted as Base58 or Bech32.
-    if (error_str.empty()) error_str = "Invalid address format";
-
     return CNoDestination();
 }
 } // namespace
@@ -234,24 +209,17 @@ std::string EncodeExtKey(const CExtKey& key)
 
 std::string EncodeDestination(const CTxDestination& dest)
 {
-    return std::visit(DestinationEncoder(Params()), dest);
-}
-
-CTxDestination DecodeDestination(const std::string& str, std::string& error_msg)
-{
-    return DecodeDestination(str, Params(), error_msg);
+    return boost::apply_visitor(DestinationEncoder(Params()), dest);
 }
 
 CTxDestination DecodeDestination(const std::string& str)
 {
-    std::string error_msg;
-    return DecodeDestination(str, error_msg);
+    return DecodeDestination(str, Params());
 }
 
 bool IsValidDestinationString(const std::string& str, const CChainParams& params)
 {
-    std::string error_msg;
-    return IsValidDestination(DecodeDestination(str, params, error_msg));
+    return IsValidDestination(DecodeDestination(str, params));
 }
 
 bool IsValidDestinationString(const std::string& str)

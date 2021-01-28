@@ -1,31 +1,24 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2020 The Bitcoin Core developers
+// Copyright (c) 2009-2019 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_UTIL_TIME_H
-#define BITCOIN_UTIL_TIME_H
+#ifndef COUNOSH_UTIL_TIME_H
+#define COUNOSH_UTIL_TIME_H
 
-#include <chrono>
 #include <stdint.h>
 #include <string>
-
-using namespace std::chrono_literals;
+#include <chrono>
 
 void UninterruptibleSleep(const std::chrono::microseconds& n);
 
 /**
  * Helper to count the seconds of a duration.
  *
- * All durations should be using std::chrono and calling this should generally
- * be avoided in code. Though, it is still preferred to an inline t.count() to
- * protect against a reliance on the exact type of t.
- *
- * This helper is used to convert durations before passing them over an
- * interface that doesn't support std::chrono (e.g. RPC, debug log, or the GUI)
+ * All durations should be using std::chrono and calling this should generally be avoided in code. Though, it is still
+ * preferred to an inline t.count() to protect against a reliance on the exact type of t.
  */
 inline int64_t count_seconds(std::chrono::seconds t) { return t.count(); }
-inline int64_t count_microseconds(std::chrono::microseconds t) { return t.count(); }
 
 /**
  * DEPRECATED
@@ -57,4 +50,4 @@ std::string FormatISO8601DateTime(int64_t nTime);
 std::string FormatISO8601Date(int64_t nTime);
 int64_t ParseISO8601DateTime(const std::string& str);
 
-#endif // BITCOIN_UTIL_TIME_H
+#endif // COUNOSH_UTIL_TIME_H

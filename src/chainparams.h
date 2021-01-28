@@ -1,10 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2020 The Bitcoin Core developers
+// Copyright (c) 2009-2019 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_CHAINPARAMS_H
-#define BITCOIN_CHAINPARAMS_H
+#ifndef COUNOSH_CHAINPARAMS_H
+#define COUNOSH_CHAINPARAMS_H
 
 #include <chainparamsbase.h>
 #include <consensus/params.h>
@@ -23,11 +23,6 @@ typedef std::map<int, uint256> MapCheckpoints;
 
 struct CCheckpointData {
     MapCheckpoints mapCheckpoints;
-
-    int GetHeight() const {
-        const auto& final_checkpoint = mapCheckpoints.rbegin();
-        return final_checkpoint->first /* height */;
-    }
 };
 
 /**
@@ -44,7 +39,7 @@ struct ChainTxData {
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
- * Bitcoin system. There are three: the main network on which people trade goods
+ * CounosH system. There are three: the main network on which people trade goods
  * and services, the public test network which gets reset from time to time and
  * a regression test mode which is intended for private networks only. It has
  * minimal difficulty to ensure that blocks can be found instantly.
@@ -119,7 +114,7 @@ protected:
  * @returns a CChainParams* of the chosen chain.
  * @throws a std::runtime_error if the chain is not supported.
  */
-std::unique_ptr<const CChainParams> CreateChainParams(const ArgsManager& args, const std::string& chain);
+std::unique_ptr<const CChainParams> CreateChainParams(const std::string& chain);
 
 /**
  * Return the currently selected parameters. This won't change after app
@@ -133,4 +128,4 @@ const CChainParams &Params();
  */
 void SelectParams(const std::string& chain);
 
-#endif // BITCOIN_CHAINPARAMS_H
+#endif // COUNOSH_CHAINPARAMS_H

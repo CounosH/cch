@@ -1,10 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2020 The Bitcoin Core developers
+// Copyright (c) 2009-2019 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_RANDOM_H
-#define BITCOIN_RANDOM_H
+#ifndef COUNOSH_RANDOM_H
+#define COUNOSH_RANDOM_H
 
 #include <crypto/chacha20.h>
 #include <crypto/common.h>
@@ -67,21 +67,8 @@
  * Thread-safe.
  */
 void GetRandBytes(unsigned char* buf, int num) noexcept;
-/** Generate a uniform random integer in the range [0..range). Precondition: range > 0 */
 uint64_t GetRand(uint64_t nMax) noexcept;
-/** Generate a uniform random duration in the range [0..max). Precondition: max.count() > 0 */
-template <typename D>
-D GetRandomDuration(typename std::common_type<D>::type max) noexcept
-// Having the compiler infer the template argument from the function argument
-// is dangerous, because the desired return value generally has a different
-// type than the function argument. So std::common_type is used to force the
-// call site to specify the type of the return value.
-{
-    assert(max.count() > 0);
-    return D{GetRand(max.count())};
-};
-constexpr auto GetRandMicros = GetRandomDuration<std::chrono::microseconds>;
-constexpr auto GetRandMillis = GetRandomDuration<std::chrono::milliseconds>;
+std::chrono::microseconds GetRandMicros(std::chrono::microseconds duration_max) noexcept;
 int GetRandInt(int nMax) noexcept;
 uint256 GetRandHash() noexcept;
 
@@ -265,4 +252,4 @@ bool Random_SanityCheck();
  */
 void RandomInit();
 
-#endif // BITCOIN_RANDOM_H
+#endif // COUNOSH_RANDOM_H

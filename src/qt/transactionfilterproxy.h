@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2020 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_TRANSACTIONFILTERPROXY_H
-#define BITCOIN_QT_TRANSACTIONFILTERPROXY_H
+#ifndef COUNOSH_QT_TRANSACTIONFILTERPROXY_H
+#define COUNOSH_QT_TRANSACTIONFILTERPROXY_H
 
 #include <amount.h>
 
@@ -49,10 +49,10 @@ public:
     /** Set whether to show conflicted transactions. */
     void setShowInactive(bool showInactive);
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
 protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const override;
+    bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const;
 
 private:
     QDateTime dateFrom;
@@ -65,4 +65,4 @@ private:
     bool showInactive;
 };
 
-#endif // BITCOIN_QT_TRANSACTIONFILTERPROXY_H
+#endif // COUNOSH_QT_TRANSACTIONFILTERPROXY_H

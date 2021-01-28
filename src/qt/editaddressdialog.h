@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2020 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_EDITADDRESSDIALOG_H
-#define BITCOIN_QT_EDITADDRESSDIALOG_H
+#ifndef COUNOSH_QT_EDITADDRESSDIALOG_H
+#define COUNOSH_QT_EDITADDRESSDIALOG_H
 
 #include <QDialog>
 
@@ -40,7 +40,7 @@ public:
     void setAddress(const QString &address);
 
 public Q_SLOTS:
-    void accept() override;
+    void accept();
 
 private:
     bool saveCurrentRow();
@@ -56,4 +56,4 @@ private:
     QString address;
 };
 
-#endif // BITCOIN_QT_EDITADDRESSDIALOG_H
+#endif // COUNOSH_QT_EDITADDRESSDIALOG_H

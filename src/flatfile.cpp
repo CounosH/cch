@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2019 The Bitcoin Core developers
+// Copyright (c) 2009-2019 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -92,7 +92,6 @@ bool FlatFileSeq::Flush(const FlatFilePos& pos, bool finalize)
         fclose(file);
         return error("%s: failed to commit file %d", __func__, pos.nFile);
     }
-    DirectoryCommit(m_dir);
 
     fclose(file);
     return true;

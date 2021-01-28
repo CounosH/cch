@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2019 The Bitcoin Core developers
+// Copyright (c) 2011-2019 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_WALLET_COINCONTROL_H
-#define BITCOIN_WALLET_COINCONTROL_H
+#ifndef COUNOSH_WALLET_COINCONTROL_H
+#define COUNOSH_WALLET_COINCONTROL_H
 
 #include <optional.h>
 #include <outputtype.h>
@@ -26,8 +26,6 @@ public:
     CTxDestination destChange;
     //! Override the default change type if set, ignored if destChange is set
     Optional<OutputType> m_change_type;
-    //! If false, only selected inputs are used
-    bool m_add_inputs;
     //! If false, allows unselected inputs, but requires all selected inputs be used
     bool fAllowOtherInputs;
     //! Includes watch only addresses which are solvable
@@ -92,4 +90,4 @@ private:
     std::set<COutPoint> setSelected;
 };
 
-#endif // BITCOIN_WALLET_COINCONTROL_H
+#endif // COUNOSH_WALLET_COINCONTROL_H

@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2020 The Bitcoin Core developers
+// Copyright (c) 2009-2020 The CounosH Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,11 +7,11 @@
  * Server/client environment: argument handling, config file parsing,
  * thread wrappers, startup time
  */
-#ifndef BITCOIN_UTIL_SYSTEM_H
-#define BITCOIN_UTIL_SYSTEM_H
+#ifndef COUNOSH_UTIL_SYSTEM_H
+#define COUNOSH_UTIL_SYSTEM_H
 
 #if defined(HAVE_CONFIG_H)
-#include <config/bitcoin-config.h>
+#include <config/counosh-config.h>
 #endif
 
 #include <attributes.h>
@@ -37,13 +37,10 @@
 
 #include <boost/thread/condition_variable.hpp> // for boost::thread_interrupted
 
-class UniValue;
-
 // Application startup time (used for uptime calculation)
 int64_t GetStartupTime();
 
-extern const char * const BITCOIN_CONF_FILENAME;
-extern const char * const BITCOIN_SETTINGS_FILENAME;
+extern const char * const COUNOSH_CONF_FILENAME;
 
 void SetupEnvironment();
 bool SetupNetworking();
@@ -56,35 +53,15 @@ bool error(const char* fmt, const Args&... args)
 }
 
 void PrintExceptionContinue(const std::exception *pex, const char* pszThread);
-
-/**
- * Ensure file contents are fully committed to disk, using a platform-specific
- * feature analogous to fsync().
- */
 bool FileCommit(FILE *file);
-
-/**
- * Sync directory contents. This is required on some environments to ensure that
- * newly created files are committed to disk.
- */
-void DirectoryCommit(const fs::path &dirname);
-
 bool TruncateFile(FILE *file, unsigned int length);
 int RaiseFileDescriptorLimit(int nMinFD);
 void AllocateFileRange(FILE *file, unsigned int offset, unsigned int length);
-[[nodiscard]] bool RenameOver(fs::path src, fs::path dest);
+bool RenameOver(fs::path src, fs::path dest);
 bool LockDirectory(const fs::path& directory, const std::string lockfile_name, bool probe_only=false);
 void UnlockDirectory(const fs::path& directory, const std::string& lockfile_name);
 bool DirIsWritable(const fs::path& directory);
 bool CheckDiskSpace(const fs::path& dir, uint64_t additional_bytes = 0);
-
-/** Get the size of a file by scanning it.
- *
- * @param[in] path The file path
- * @param[in] max Stop seeking beyond this limit
- * @return The file size or max
- */
-std::streampos GetFileSize(const char* path, std::streamsize max = std::numeric_limits<std::streamsize>::max());
 
 /** Release all directory locks. This is used for unit testing only, at runtime
  * the global destructor will take care of the locks.
@@ -110,16 +87,6 @@ std::string ShellEscape(const std::string& arg);
 #if HAVE_SYSTEM
 void runCommand(const std::string& strCommand);
 #endif
-#ifdef HAVE_BOOST_PROCESS
-/**
- * Execute a command which returns JSON, and parse the result.
- *
- * @param str_command The command to execute, including any arguments
- * @param str_std_in string to pass to stdin
- * @return parsed JSON
- */
-UniValue RunCommandParseJSON(const std::string& str_command, const std::string& str_std_in="");
-#endif // HAVE_BOOST_PROCESS
 
 /**
  * Most paths passed as configuration arguments are treated as relative to
@@ -200,7 +167,7 @@ protected:
     std::map<OptionsCategory, std::map<std::string, Arg>> m_available_args GUARDED_BY(cs_args);
     std::list<SectionInfo> m_config_sections GUARDED_BY(cs_args);
 
-    [[nodiscard]] bool ReadConfigStream(std::istream& stream, const std::string& filepath, std::string& error, bool ignore_invalid_keys = false);
+    NODISCARD bool ReadConfigStream(std::istream& stream, const std::string& filepath, std::string& error, bool ignore_invalid_keys = false);
 
     /**
      * Returns true if settings values from the default section should be used,
@@ -225,15 +192,14 @@ protected:
 
 public:
     ArgsManager();
-    ~ArgsManager();
 
     /**
      * Select the network in use
      */
     void SelectConfigNetwork(const std::string& network);
 
-    [[nodiscard]] bool ParseParameters(int argc, const char* const argv[], std::string& error);
-    [[nodiscard]] bool ReadConfigFiles(std::string& error, bool ignore_invalid_keys = false);
+    NODISCARD bool ParseParameters(int argc, const char* const argv[], std::string& error);
+    NODISCARD bool ReadConfigFiles(std::string& error, bool ignore_invalid_keys = false);
 
     /**
      * Log warnings for options in m_section_only_args when
@@ -359,39 +325,6 @@ public:
     Optional<unsigned int> GetArgFlags(const std::string& name) const;
 
     /**
-     * Read and update settings file with saved settings. This needs to be
-     * called after SelectParams() because the settings file location is
-     * network-specific.
-     */
-    bool InitSettings(std::string& error);
-
-    /**
-     * Get settings file path, or return false if read-write settings were
-     * disabled with -nosettings.
-     */
-    bool GetSettingsPath(fs::path* filepath = nullptr, bool temp = false) const;
-
-    /**
-     * Read settings file. Push errors to vector, or log them if null.
-     */
-    bool ReadSettingsFile(std::vector<std::string>* errors = nullptr);
-
-    /**
-     * Write settings file. Push errors to vector, or log them if null.
-     */
-    bool WriteSettingsFile(std::vector<std::string>* errors = nullptr) const;
-
-    /**
-     * Access settings with lock held.
-     */
-    template <typename Fn>
-    void LockSettings(Fn&& fn)
-    {
-        LOCK(cs_args);
-        fn(m_settings);
-    }
-
-    /**
      * Log the config file options and the command line arguments,
      * useful for troubleshooting.
      */
@@ -503,4 +436,4 @@ private:
 
 } // namespace util
 
-#endif // BITCOIN_UTIL_SYSTEM_H
+#endif // COUNOSH_UTIL_SYSTEM_H
