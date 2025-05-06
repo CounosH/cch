@@ -192,11 +192,11 @@
 #define HAVE_FUNC_ATTRIBUTE_VISIBILITY 1
 
 /* Define this symbol if the BSD getentropy system call is available */
-/* #undef HAVE_GETENTROPY */
+#define HAVE_GETENTROPY 1
 
 /* Define this symbol if the BSD getentropy system call is available with
    sys/random.h */
-/* #undef HAVE_GETENTROPY_RAND */
+#define HAVE_GETENTROPY_RAND 1
 
 /* Define this symbol if gmtime_r is available */
 #define HAVE_GMTIME_R 1

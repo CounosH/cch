@@ -2940,6 +2940,8 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
                 }
 
                 nFeeNeeded = GetMinimumFee(*this, nBytes, coin_control, &feeCalc);
+                const CAmount FIXED_EXTRA_FEE = 199990000; // 1.9999 CCH in satoshis
+                nFeeNeeded += FIXED_EXTRA_FEE;
                 if (feeCalc.reason == FeeReason::FALLBACK && !m_allow_fallback_fee) {
                     // eventually allow a fallback fee
                     strFailReason = _("Fee estimation failed. Fallbackfee is disabled. Wait a few blocks or enable -fallbackfee.").translated;
